@@ -1,0 +1,61 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+data = pd.read_csv('/kaggle/input/road-accident-severity-in-india/Road.csv')
+data.sample(3)
+data.info()
+
+days_ordered = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+data['Day_of_week'] = pd.Categorical(data['Day_of_week'], categories=days_ordered, ordered=True)
+
+custom_colors = {'Male': '#0000FF', 'Female': '#FF0000', 'Unknown': '#00FF00'}
+
+genders = ['Male', 'Female', 'Unknown']
+
+plt.figure(figsize=(18, 6))
+
+for i, gender in enumerate(genders):
+    plt.subplot(1, 3, i+1)
+    
+    color_bin = custom_colors[gender]
+    
+    sns.histplot(data=data[data['Sex_of_driver'] == gender], x='Day_of_week', common_norm=False, color=color_bin)
+    
+    plt.xlabel("Day of the Week")
+    plt.ylabel("Frequency")
+    plt.title(f"Distribution of Accidents by Day of the Week ({gender})")
+
+    plt.xticks(rotation=45)
+
+plt.tight_layout()
+plt.show()
+
+df_filtered = data[data['Driving_experience'] != 'Unknown']
+
+df_filtered['Driving_experience'] = df_filtered['Driving_experience'].str.extract(r'(\d+)').astype(float)
+
+plt.figure(figsize=(10, 6))
+sns.violinplot(data=df_filtered, x='Driving_experience', y='Accident_severity')
+plt.xlabel("Years of Driving Experience")
+
+plt.ylabel("Accident Severity")
+plt.title("Relationship between Years of Driving Experience and Accident Severity")
+plt.xticks(rotation=45)
+plt.show()
+
+
+
+
+# Extract hour, minute, and second from the 'Time' column
+data['Hour'] = pd.to_datetime(data['Time']).dt.hour
+data['Minute'] = pd.to_datetime(data['Time']).dt.minute
+data['Second'] = pd.to_datetime(data['Time']).dt.second
+
+# Drop the original 'Time' column
+data.drop('Time', axis=1, inplace=True)
+print('___________________________')
+print ('accurancy',accurancy)
+print('____________________________')
+print()
